@@ -29,7 +29,8 @@ HF = "${@ bb.utils.contains('TUNE_CCARGS_MFLOAT', 'hard', 'hf', '', d)}"
 HF[vardepvalue] = "${HF}"
 
 OECMAKE_TARGET_COMPILE = "compiler-rt"
-OECMAKE_TARGET_INSTALL = "install-compiler-rt install-compiler-rt-headers"
+#OECMAKE_TARGET_INSTALL = "install-compiler-rt install-compiler-rt-headers"
+OECMAKE_TARGET_INSTALL = "install-compiler-rt"
 OECMAKE_SOURCEPATH = "${S}/llvm"
 EXTRA_OECMAKE += "-DCOMPILER_RT_STANDALONE_BUILD=OFF \
                   -DCOMPILER_RT_DEFAULT_TARGET_TRIPLE=${HOST_ARCH}${HF}${HOST_VENDOR}-${HOST_OS} \

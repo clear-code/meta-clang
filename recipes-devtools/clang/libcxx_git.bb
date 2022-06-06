@@ -34,8 +34,8 @@ LIC_FILES_CHKSUM = "file://libcxx/LICENSE.TXT;md5=55d89dd7eec8d3b4204b680e27da39
 
 LLVM_LIBDIR_SUFFIX_powerpc64 = "64"
 
-OECMAKE_TARGET_COMPILE = "cxxabi cxx"
-OECMAKE_TARGET_INSTALL = "install-cxx install-cxxabi"
+#OECMAKE_TARGET_COMPILE = "cxxabi cxx"
+#OECMAKE_TARGET_INSTALL = "install-cxx install-cxxabi"
 OECMAKE_SOURCEPATH = "${S}/llvm"
 EXTRA_OECMAKE += "\
                   -DCMAKE_CROSSCOMPILING=ON \
@@ -71,3 +71,19 @@ ALLOW_EMPTY_${PN} = "1"
 BBCLASSEXTEND = "native nativesdk"
 TOOLCHAIN = "clang"
 
+
+do_compile() {
+    if ${@bb.utils.contains('PACKAGECONFIG', 'unwind', 'true', 'false', d)}; then
+        ninja -v ${PARALLEL_MAKE} unwind
+    fi
+    ninja -v ${PARALLEL_MAKE} cxxabi
+    ninja -v ${PARALLEL_MAKE} cxx
+}
+
+do_install() {
+    if ${@bb.utils.contains('PACKAGECONFIG', 'unwind', 'true', 'false', d)}; then
+        DESTDIR=${D} ninja ${PARALLEL_MAKE} install-unwind
+        rm -rf ${D}${libdir}/libunwind.so
+    fi
+    DESTDIR=${D} ninja ${PARALLEL_MAKE} install-cxx install-cxxabi
+}
